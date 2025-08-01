@@ -9,7 +9,7 @@ type Props = {
 const SearchBar: React.FC<Props> = ({ query, setQuery }) => (
   <input
     className={styles.search}
-    placeholder="Search by tag, link, description or title..."
+    placeholder="Search by tag, link, description or title.."
     value={query}
     onChange={e => setQuery(e.target.value)}
   />
