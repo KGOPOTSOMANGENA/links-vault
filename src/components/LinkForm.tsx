@@ -11,7 +11,13 @@ type Props = {
 };
 
 const LinkForm: React.FC<Props> = ({ onSave, editingLink, onCancelEdit }) => {
-  const [link, setLink] = useState<Link>({ id: '', title: '', url: '', description: '', tags: [] });
+  const [link, setLink] = useState<Link>({
+    id: '',
+    title: '',
+    url: '',
+    description: '',
+    tags: [],
+  });
 
   useEffect(() => {
     if (editingLink) setLink(editingLink);
@@ -19,22 +25,57 @@ const LinkForm: React.FC<Props> = ({ onSave, editingLink, onCancelEdit }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setLink({ ...link, [name]: value });
+
+    if (name === 'tags') {
+      // Convert comma-separated string into an array of trimmed tags
+      const tagsArray = value.split(',').map(tag => tag.trim()).filter(Boolean);
+      setLink({ ...link, tags: tagsArray });
+    } else {
+      setLink({ ...link, [name]: value });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!link.url.trim() || !link.title.trim()) return;
-    onSave({ ...link, id: editingLink ? link.id : Date.now().toString(), tags: link.tags.join(',').split(',') });
+
+    // No need to split tags again — already processed in handleChange
+    onSave({
+      ...link,
+      id: editingLink ? link.id : Date.now().toString(),
+    });
+
+    // Reset form
     setLink({ id: '', title: '', url: '', description: '', tags: [] });
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <InputField name="title" placeholder="Title" value={link.title} onChange={handleChange} />
-      <InputField name="url" placeholder="URL" value={link.url} onChange={handleChange} />
-      <InputField name="description" placeholder="Description" value={link.description} onChange={handleChange} isTextarea />
-      <InputField name="tags" placeholder="Tags (comma-separated)" value={link.tags.join(',')} onChange={handleChange} />
+      <InputField
+        name="title"
+        placeholder="Title"
+        value={link.title}
+        onChange={handleChange}
+      />
+      <InputField
+        name="url"
+        placeholder="URL"
+        value={link.url}
+        onChange={handleChange}
+      />
+      <InputField
+        name="description"
+        placeholder="Description"
+        value={link.description}
+        onChange={handleChange}
+        isTextarea
+      />
+      <InputField
+        name="tags"
+        placeholder="Tags (comma-separated)"
+        value={link.tags.join(', ')} // Display tags as a comma-separated string
+        onChange={handleChange}
+      />
       <div className={styles.formButtons}>
         <Button type="submit">{editingLink ? 'Update' : 'Save'}</Button>
         {editingLink && <Button onClick={onCancelEdit}>Cancel</Button>}
