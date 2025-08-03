@@ -27,7 +27,7 @@ const LinkForm: React.FC<Props> = ({ onSave, editingLink, onCancelEdit }) => {
     const { name, value } = e.target;
 
     if (name === 'tags') {
-      // Convert comma-separated string into an array of trimmed tags
+   
       const tagsArray = value.split(',').map(tag => tag.trim()).filter(Boolean);
       setLink({ ...link, tags: tagsArray });
     } else {
@@ -39,13 +39,11 @@ const LinkForm: React.FC<Props> = ({ onSave, editingLink, onCancelEdit }) => {
     e.preventDefault();
     if (!link.url.trim() || !link.title.trim()) return;
 
-    // No need to split tags again — already processed in handleChange
     onSave({
       ...link,
       id: editingLink ? link.id : Date.now().toString(),
     });
 
-    // Reset form
     setLink({ id: '', title: '', url: '', description: '', tags: [] });
   };
 
@@ -73,7 +71,7 @@ const LinkForm: React.FC<Props> = ({ onSave, editingLink, onCancelEdit }) => {
       <InputField
         name="tags"
         placeholder="Tags (comma-separated)"
-        value={link.tags.join(', ')} // Display tags as a comma-separated string
+        value={link.tags.join(', ')} 
         onChange={handleChange}
       />
       <div className={styles.formButtons}>
